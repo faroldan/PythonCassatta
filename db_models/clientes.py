@@ -10,30 +10,22 @@ class Clientes(Base):
     print("entering headquarters config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    heq = Table("headquarters", metadata, autoload=True, autoload_with=engine, schema='hca')
+    cli = Table("clientes", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
-    print("finished config for headquarters")
+    print("finished config for clientes")
 
     @classmethod
-    def headquarters_by_hospital_id(cls, *, hos_id):
+    def clientes_id(cls, *, idclientes):
         """
         Cuáles son las sedes del hospital hos_id
         """
-        query = select([cls.heq]).where(cls.heq.c.hos_id == hos_id)
+        query = select([cls.cli]).where(cls.cli.c.idclientes == idclientes)
         return query
 
     @classmethod
-    def single_headquarters(cls, *, heq_id):
+    def allclientes(cls):
         """
         Cuáles son las sedes de la sede heq_id
         """
-        query = select([cls.heq]).where(cls.heq.c.heq_id == heq_id)
-        return query
-
-    @classmethod
-    def all_headquarters(cls):
-        """
-        Cuáles son las sedes (en caso de no pasar parámetros)
-        """
-        query = select([cls.heq])
+        query = select([cls.cli])
         return query
