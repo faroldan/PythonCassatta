@@ -7,18 +7,26 @@ Base = declarative_base()
 
 class Productos(Base):
     __tablename__ = "productos"
-    print("entering parameters config")
+    print("entering prod config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    ins = Table("health_insurance", metadata, autoload=True, autoload_with=engine, schema='hca')
+    prod = Table("productos", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
-    print("finished config for parameters")
+    print("finished config for products")
     
     @classmethod
-    def insurances_by_id(cls, *, hos_id):
+    def productos_by_id(cls, *, idproductos):
         """
-        Cuáles son las obras sociales
+        Cuáles son los prod
         """
-        query = select([cls.ins]).where(cls.ins.c.hos_id == hos_id)
+        query = select([cls.ins]).where(cls.prod.c.idproductos == idproductos)
         return query
+    
+       @classmethod
+        def productos_all(cls, *, idproductos):
+            """
+            todos los productos
+            """
+            query = select([cls.ins])
+            return query
         
