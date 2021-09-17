@@ -10,15 +10,28 @@ class Productos(Base):
     print("entering parameters config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    ins = Table("health_insurance", metadata, autoload=True, autoload_with=engine, schema='hca')
+    prod = Table("productos", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
     print("finished config for parameters")
     
     @classmethod
-    def insurances_by_id(cls, *, hos_id):
+    def productos_id(cls, *, idproductos):
         """
-        Cuáles son las obras sociales
         """
-        query = select([cls.ins]).where(cls.ins.c.hos_id == hos_id)
+        query = select([cls.prod]).where(cls.prod.c.idproductos == idproductos)
         return query
-        
+     
+          @classmethod
+    def allproductos(cls):
+        """
+        """
+        query = select([cls.prod])
+        return query
+
+    @classmethod
+    def condition_productos(cls, *, idproductos):
+        """
+        Productos con precio mayor a 10000
+        """
+        query = select([cls.prod]).where(cls.prod.c.precio_unit>10000)
+        return query
