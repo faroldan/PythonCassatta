@@ -11,42 +11,21 @@ class Envasados(Base):
     print("entering healthrelations config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    hre = Table("health_relations", metadata, autoload=True, autoload_with=engine, schema='hca')
+    env = Table("envasados", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
     print("finished config for healthrealations")
 
     @classmethod
-    def all_calendars(cls):
+    def all_envasados(cls):
         """
-            Cuáles son los calendarios
+            todos envasados
         """
-        query = select([cls.hre])
+        query = select([cls.env])
         return query
 
     @classmethod
-    def calendars_by_headquarters(cls, *, heq_id):
+    def envasados_id(cls, *, idenvasados):
         """
-        Cuáles son los calendarios de la sede heq_id
         """
-        query = select([cls.hre]).where(cls.hre.c.heq_id == heq_id)
-        return query
-
-    @classmethod
-    def calendars_by_doctor(cls, *, doc_id):
-        """
-            Cuáles son los calendarios del doctor doc_id
-        """
-        query = select([cls.hre]).where(cls.hre.c.doc_id == doc_id)
-        return query
-
-    @classmethod
-    def calendars_by_doctor_in_headquarters(cls, *, doc_id, heq_id):
-        """
-            Cuáles son los calendarios de la sede heq_id y del doctor doc_id
-        """
-        query = (
-            select([cls.hre])
-            .where(cls.hre.c.heq_id == heq_id)
-            .where(cls.hre.c.doc_id == doc_id)
-        )
+        query = select([cls.env]).where(cls.cli.c.idenvasados == idenvasados)
         return query
