@@ -10,7 +10,7 @@ class Productos(Base):
     print("entering parameters config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    prod = Table("productos", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
+    prod = Table("productos", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
     print("finished config for parameters")
     
@@ -21,7 +21,7 @@ class Productos(Base):
         query = select([cls.prod]).where(cls.prod.c.idproductos == idproductos)
         return query
      
-          @classmethod
+    @classmethod
     def allproductos(cls):
         """
         """
