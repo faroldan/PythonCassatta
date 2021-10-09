@@ -14,7 +14,7 @@ class Ventas(Base):
     print("entering ventas config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    doc = Table("ventas", metadata, autoload=True, autoload_with=engine, schema='cassatta')
+    ventas = Table("ventas", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
     print("finished config for ventas")
 
@@ -23,18 +23,18 @@ class Ventas(Base):
         """
             Cuáles son las fechas de las ventas
         """
-        query = select([cls.doc])
+        query = select([cls.ventas])
         return query
 
     @classmethod
-    def single_doctor(cls, *, doc_id):
+    def venta_especifica(cls, *, idventa):
         """
-            Cual es el medico de doc_id
+            Cual es la venta con id = idventa
         """
-        query = select([cls.doc]).where(cls.doc.c.doc_id == doc_id)
+        query = select([cls.venta]).where(cls.venta.c.idventa == idventa)
         return query
 
-    @classmethod
+    '''@classmethod
     def doctors_by_headquarters(cls, *, heq_id, single_mode, doc_id):
         if not single_mode:
             """
@@ -194,4 +194,4 @@ class Ventas(Base):
                 .where(cls.doc.c.msp_id == msp_id)
             )
 
-        return query
+        return query'''

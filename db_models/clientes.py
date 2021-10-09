@@ -7,17 +7,17 @@ Base = declarative_base()
 
 class Clientes(Base):
     __tablename__ = "clientes"
-    print("entering headquarters config")
+    print("entering clientes config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    cli = Table("clientes", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
+    cli = Table("clientes", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
     print("finished config for clientes")
 
     @classmethod
     def clientes_id(cls, *, idclientes):
         """
-        Cuáles son las sedes del hospital hos_id
+        Cuáles son los clientes por id
         """
         query = select([cls.cli]).where(cls.cli.c.idclientes == idclientes)
         return query

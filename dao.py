@@ -10,10 +10,10 @@ from sqlalchemy import create_engine, select, join, MetaData, Table
 
 from db_models.productos import Productos
 from db_models.ventas import Ventas
-from db_models.ventas_detalles import VentasDetalles
+from db_models.ventasDetalles import VentasDetalles
 from db_models.clientes import Clientes
 from db_models.envasados import Envasados
-from db_models.envios import envios
+from db_models.envios import Envios
 from config_vars import BBDD_CONNECTION
 
 
@@ -28,7 +28,14 @@ class VentaDAO:
         if idproductos is not None:
             query = Productos.productos_id(idproductos= idproductos)
             return self.connection.execute(query).fetchone()
+        elif idproductos is None:
+            query = Productos.allproductos()
+            return self.connection.execute(query).fetchall()
 
+    def catalogo_productos(self ,*, idproductos=None):
+        query = Productos.allproductos()
+        return self.connection.execute(query).fetchall()
+        
 '''    def get_health_insurance(self,*, hos_id=None):
         if hos_id is not None:
             query = HealthInsurances.insurances_by_id(hos_id=hos_id)

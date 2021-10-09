@@ -1,228 +1,206 @@
 --El presente script tiene los scripts de los objetos de la base de datos
 --Crear las tablas
 
-DROP USER HCA CASCADE;
+CREATE DATABASE  IF NOT EXISTS `cassatta` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `cassatta`;
+-- MySQL dump 10.13  Distrib 8.0.26, for Win64 (x86_64)
+--
+-- Host: localhost    Database: cassatta
+-- ------------------------------------------------------
+-- Server version	8.0.26
 
-CREATE USER HCA IDENTIFIED BY "hca" account UNLOCK;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-GRANT UNLIMITED TABLESPACE TO HCA;
+--
+-- Table structure for table `clientes`
+--
 
-GRANT CREATE DATABASE LINK,
-    CREATE DIMENSION,
-    CREATE MATERIALIZED VIEW,
-    CREATE PROCEDURE,
-    CREATE SEQUENCE,
-    CREATE SESSION,
-    CREATE TABLE
-TO hca;
+DROP TABLE IF EXISTS `clientes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clientes` (
+  `idclientes` int NOT NULL AUTO_INCREMENT,
+  `nombre_cli` varchar(45) DEFAULT NULL,
+  `apellido` varchar(45) DEFAULT NULL,
+  `tel` int DEFAULT NULL,
+  `cel` int DEFAULT NULL,
+  PRIMARY KEY (`idclientes`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-create table hca.HOSPITALS 
-(HOS_ID NUMBER(10) not null,
-HOS_NAME VARCHAR(40) not null);
+--
+-- Dumping data for table `clientes`
+--
 
-alter table hca.HOSPITALS add constraint "HOS_PK" primary key (HOS_ID);
+LOCK TABLES `clientes` WRITE;
+/*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
+INSERT INTO `clientes` VALUES (1,'cosme','roldanius',1234,56789),(2,'franco','racing',5432,17809);
+/*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
+UNLOCK TABLES;
 
-create table hca.HEADQUARTERS 
-(HEQ_ID NUMBER(10) not null,
-HEQ_NAME VARCHAR(40) not null,
-HEQ_ADDRESS VARCHAR(40) not null,
-HEQ_PROVINCE VARCHAR(40),
-HEQ_COUNTRY VARCHAR(40),
-HOS_ID NUMBER(10) not null);
+--
+-- Table structure for table `envasados`
+--
 
-alter table hca.HEADQUARTERS add constraint "HEQ_PK" primary key (HEQ_ID);
-alter table hca.HEADQUARTERS add constraint "HEQ_HOS_FK" foreign key (HOS_ID) references hca.HOSPITALS(HOS_ID);
+DROP TABLE IF EXISTS `envasados`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `envasados` (
+  `idenvasados` int NOT NULL AUTO_INCREMENT,
+  `nombre_env` varchar(150) NOT NULL,
+  `desc_env` varchar(900) DEFAULT NULL,
+  `costo_extra` int DEFAULT NULL,
+  `cant_limite` int DEFAULT NULL,
+  `tipo` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`idenvasados`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `envasados`
+--
 
-create table hca.medical_specialties
-(MSP_ID NUMBER(10) not null,
-MSP_NAME VARCHAR(40) not null,
-HOS_ID NUMBER(10) not null);
+LOCK TABLES `envasados` WRITE;
+/*!40000 ALTER TABLE `envasados` DISABLE KEYS */;
+INSERT INTO `envasados` VALUES (1,'caja carton','caja de carton prensado mediana',3,8,1),(2,'bolsa papel','bolsa de papel de 300 cc',1,6,2);
+/*!40000 ALTER TABLE `envasados` ENABLE KEYS */;
+UNLOCK TABLES;
 
-alter table hca.MEDICAL_SPECIALTIES add constraint "MSP_PK" primary key (MSP_ID);
-alter table hca.MEDICAL_SPECIALTIES add constraint "MSP_HOS_FK" foreign key (HOS_ID) references hca.HOSPITALS(HOS_ID);
+--
+-- Table structure for table `envios`
+--
 
+DROP TABLE IF EXISTS `envios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `envios` (
+  `idenvios` int NOT NULL AUTO_INCREMENT,
+  `idventa` int DEFAULT NULL,
+  `fecha` datetime DEFAULT NULL,
+  `direccion` varchar(150) DEFAULT NULL COMMENT 'puede o no ser la del cliente',
+  `tel` int DEFAULT NULL COMMENT 'tel de contacto',
+  `cel` int DEFAULT NULL COMMENT 'Cel de contacto ',
+  PRIMARY KEY (`idenvios`),
+  KEY `envios_venta_idx` (`idventa`),
+  CONSTRAINT `envios_venta` FOREIGN KEY (`idventa`) REFERENCES `ventas` (`idventa`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-create table hca.DOCTORS
-(DOC_ID NUMBER(10) NOT NULL,
- DOC_LAST_NAME VARCHAR(40) NOT NULL,
- DOC_FIRST_NAME VARCHAR(40) NOT null,
- MSP_ID NUMBER(10) not null);
+--
+-- Dumping data for table `envios`
+--
 
-alter table hca.DOCTORS add constraint "DOC_PK" primary key (DOC_ID);
-alter table hca.DOCTORS add constraint "DOC_MSP_FK" foreign key (MSP_ID) references hca.MEDICAL_SPECIALTIES(MSP_ID);
+LOCK TABLES `envios` WRITE;
+/*!40000 ALTER TABLE `envios` DISABLE KEYS */;
+INSERT INTO `envios` VALUES (1,1,'2021-09-16 00:00:00','calle falsa 123',5432,NULL);
+/*!40000 ALTER TABLE `envios` ENABLE KEYS */;
+UNLOCK TABLES;
 
+--
+-- Table structure for table `productos`
+--
 
-create table hca.HEALTH_INSURANCE
-(HIN_ID NUMBER(10) not null,
-HIN_NAME VARCHAR(100),
-HOS_ID NUMBER(10) not null);
+DROP TABLE IF EXISTS `productos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `productos` (
+  `idproductos` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `descripcion` varchar(900) DEFAULT NULL,
+  `tipo` tinyint(1) DEFAULT NULL,
+  `foto` blob,
+  `precio_unit` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idproductos`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-alter table hca.HEALTH_INSURANCE add constraint "HIN_PK" primary key (HIN_ID);
-alter table hca.HEALTH_INSURANCE add constraint "HIN_HEQ_FK" foreign key (HOS_ID) references hca.HOSPITALS(HOS_ID);
+--
+-- Dumping data for table `productos`
+--
 
+LOCK TABLES `productos` WRITE;
+/*!40000 ALTER TABLE `productos` DISABLE KEYS */;
+INSERT INTO `productos` VALUES (1,'alfajor','alfajor de chocolate con dulce de leche',1,NULL,75.00),(2,'pan lactal','pan lactal bajo en grasa sin TACC',2,NULL,120.00),(3,'alfacookie','alfajor con galleta con chispas de chocolate',1,NULL,80.00);
+/*!40000 ALTER TABLE `productos` ENABLE KEYS */;
+UNLOCK TABLES;
 
-create table hca.HEALTH_RELATIONS
-(DOC_ID NUMBER(10) not null,
- HEQ_ID NUMBER(10) not null,
- HRE_CALENDAR_ID varchar(100),
- HRE_CALENDAR_DESCRIPTION varchar(100));
+--
+-- Table structure for table `ventas`
+--
 
-alter table hca.HEALTH_RELATIONS add constraint "HRE_PK" primary key (DOC_ID, HEQ_ID);
-alter table hca.HEALTH_RELATIONS add constraint "HRE_DOC_FK" foreign key (DOC_ID) references hca.DOCTORS(DOC_ID);
-alter table hca.HEALTH_RELATIONS add constraint "HRE_HEQ_FK" foreign key (HEQ_ID) references hca.HEADQUARTERS(HEQ_ID);
+DROP TABLE IF EXISTS `ventas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ventas` (
+  `idventa` int NOT NULL AUTO_INCREMENT,
+  `idcliente` int DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `confirmado` tinyint DEFAULT NULL,
+  `total` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idventa`),
+  KEY `venta_cliente_fk_idx` (`idcliente`),
+  CONSTRAINT `venta_cliente_fk` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idclientes`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Dumping data for table `ventas`
+--
 
-create table hca.health_care_parameters
-(hpa_id varchar(40) not null,
-hpa_valor_char varchar(40),
-hpa_valor_date date,
-hpa_valor_NUMBER NUMBER);
+LOCK TABLES `ventas` WRITE;
+/*!40000 ALTER TABLE `ventas` DISABLE KEYS */;
+INSERT INTO `ventas` VALUES (1,2,'2021-09-16',1,200.00);
+/*!40000 ALTER TABLE `ventas` ENABLE KEYS */;
+UNLOCK TABLES;
 
-alter table hca.health_care_parameters add constraint "HPA_PK" primary key (HPA_ID);
+--
+-- Table structure for table `ventas_detalles`
+--
 
+DROP TABLE IF EXISTS `ventas_detalles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ventas_detalles` (
+  `idproducto` int NOT NULL,
+  `idventa` int NOT NULL,
+  `precio_unit` decimal(10,2) DEFAULT NULL,
+  `cant_prod` int DEFAULT NULL,
+  `envasados_idenvasados` int NOT NULL,
+  PRIMARY KEY (`idproducto`,`idventa`,`envasados_idenvasados`),
+  KEY `vendet_venta_idx` (`idventa`),
+  KEY `fk_ventas_detalles_envasados1_idx` (`envasados_idenvasados`),
+  CONSTRAINT `fk_ventas_detalles_envasados1` FOREIGN KEY (`envasados_idenvasados`) REFERENCES `envasados` (`idenvasados`),
+  CONSTRAINT `vendet_prod` FOREIGN KEY (`idproducto`) REFERENCES `productos` (`idproductos`),
+  CONSTRAINT `vendet_venta_fk` FOREIGN KEY (`idventa`) REFERENCES `ventas` (`idventa`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
---Insertar los datos
---Insert en tabla de hospitales
-insert into hca.hospitals (hos_id, hos_name) values(1,'Clínica Universitaria Reina Fabiola');
+--
+-- Dumping data for table `ventas_detalles`
+--
 
+LOCK TABLES `ventas_detalles` WRITE;
+/*!40000 ALTER TABLE `ventas_detalles` DISABLE KEYS */;
+INSERT INTO `ventas_detalles` VALUES (2,1,120.00,1,1),(3,1,80.00,1,1);
+/*!40000 ALTER TABLE `ventas_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
---Insert en tabla de Sedes
-insert into hca.headquarters (heq_id, heq_name, heq_address, heq_province, heq_country, hos_id) 
-VALUES(1, 'Sede Central', 'Oncativo N1248 B General Paz', 'Cordoba', 'Argentina', 1);
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-insert into hca.headquarters (heq_id, heq_name, heq_address, heq_province, heq_country, hos_id) 
-VALUES(2, 'Consultorios Externos Jacinto Ríos', 'Jacinto Ríos N554 B General Paz', 'Cordoba', 'Argentina', 1);
-
-
---Insert en tablas de Obras Sociales
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(1, 'OSDE', 1);
-
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(2, 'OMINT', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(3, 'Swiss Medical', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(4, 'Galeno', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(5, 'Medife', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(6, 'Union Personal', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(7, 'Accord Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(8, 'Bristol Medicine', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(9, 'OSECAC', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(10, 'ACA Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(11, 'AMFFA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(12, 'COMI', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(13, 'Construir Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(14, 'FEMEBA', 1);
-
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(15, 'DOSUBA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(16, 'OSDEPyM', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(17, 'IOMA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(18, 'IOSE', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(19, 'Forjar Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(20, 'Sancor Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(21, 'Accord Salud', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(22, 'MOA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(23, 'OSALARA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(24, 'OSDEM', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(25, 'OSMEBA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(26, 'OSMECON', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(27, 'OSMEDICA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(28, 'OSDIPP', 1);
-
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(29, 'OSJOMN', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(30, 'OSFOT', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(31, 'OSPAT', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(32, 'OSPE', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(33, 'OSPEPBA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(34, 'OSPETAX', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(35, 'OSPERYHRA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(36, 'OSPIA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(37, 'OSPPEA', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(38, 'OSPP', 1);
-insert into hca.HEALTH_INSURANCE (hin_id, hin_name, hos_id) VALUES(39, 'OSSdeB', 1);
-commit;
-
---Insertar datos en la tabla de Especialidades Médicas
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(1, 'CLINICA MEDICA', 1);
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(2, 'ALERGIA E INMUNOLOGIA', 1);
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(3, 'ENDOCRINOLOGIA', 1);
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(4, 'DERMATOLOGIA', 1);
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(5, 'SALUD MENTAL', 1);
-insert into hca.medical_specialties (msp_id, msp_name, hos_id) VALUES(6, 'DIABETES', 1);
-
-SELECT COUNT(*) from hca.medical_specialties as ms;
-commit;
-
---Insertar en la tabla de médicos
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(1, 'Chamale', 'Oscar Elias', 1);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(2, 'Lozano', 'Alejandro', 2);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(3, 'Berardi', 'Yanina Viviana', 2);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(4, 'Bertolino', 'Maria Lorena', 3);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(5, 'Consigli', 'Nicolas Ernesto', 4);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(6, 'Antonelli', 'Romina', 5);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(7, 'Bartolacci', 'Ines', 6);
-
-insert into hca.doctors (doc_id, doc_last_name, doc_first_name, msp_id) 
-VALUES(8, 'Majul', 'Enrique', 6);
-
-commit;
-
-select count(*) from hca.doctors;
-
-
---Inserción en tablas de relaciones 
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(1, 1, 'jpm6u4d42c788gm934o97rb1mg@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(1, 2, 'ch4n1dfutp6jib5emsvs5qos84@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(2, 1, 'hepuqhvit813cnc4ne7n8vifj0@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(2, 2, 'e9cq73quhsjrsggbs6u05g1o6c@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(3, 1, '43mi3hd2t39o8pv1i7l9hcf9fk@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(4, 1, 'ekqstdglvcsev0prescj7lqrao@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(4, 2, '5og9d782l1dsc4mrd3v6dh81r8@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(5, 1, 'e6gqktkmjj3sjp88sltkamue9s@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(5, 2, '9l5u8hjcnf7dhgre7oupnjlbgk@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(6, 1, 'mutnlmfi9003acp7lpheggaur4@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(7, 1, '1bimogbosoh1q33jkuc01v5sr4@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(7, 2, 'a325eu5p1uo3ritvddg9qrh2m4@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(8, 1, 'ft5so4pnmhro9obj6b4gqms8c4@group.calendar.google.com', '');
-
-insert into hca.health_relations (doc_id, heq_id, hre_calendar_id, hre_calendar_description) 
-VALUES(8, 2, 'n9nrh9uq5kq3p2feoafecaq1s0@group.calendar.google.com', '');
-
-COMMIT;
-
+-- Dump completed on 2021-09-16 17:59:33

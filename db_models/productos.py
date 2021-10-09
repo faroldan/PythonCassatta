@@ -17,6 +17,7 @@ class Productos(Base):
     @classmethod
     def productos_id(cls, *, idproductos):
         """
+        producto por id
         """
         query = select([cls.prod]).where(cls.prod.c.idproductos == idproductos)
         return query
@@ -24,6 +25,7 @@ class Productos(Base):
     @classmethod
     def allproductos(cls):
         """
+        todos los productos
         """
         query = select([cls.prod])
         return query

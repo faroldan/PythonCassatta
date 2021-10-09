@@ -8,12 +8,12 @@ Base = declarative_base()
 class Envasados(Base):
     __tablename__ = "envasados"
 
-    print("entering healthrelations config")
+    print("entering envasados config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    env = Table("envasados", metadata, autoload=True, autoload_with=engine, schema='Cassatta')
+    env = Table("envasados", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
-    print("finished config for healthrealations")
+    print("finished config for envasados")
 
     @classmethod
     def all_envasados(cls):

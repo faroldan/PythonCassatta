@@ -7,18 +7,18 @@ Base = declarative_base()
 
 class VentasDetalles(Base):
     __tablename__ = "ventas_detalles"
-    print("entering parameters config")
+    print("Ingresando parametros de config")
     engine = create_engine(BBDD_CONNECTION)
     metadata = MetaData()
-    hos = Table("hospitals", metadata, autoload=True, autoload_with=engine, schema='hca')
+    venDet = Table("ventas_detalles", metadata, autoload=True, autoload_with=engine, schema='cassatta')
     id_not_in_db = Column(Integer, primary_key=True)
-    print("finished config for parameters")
+    print("Finalizando config")
     
     @classmethod
-    def parameters_by_id(cls, *, hos_id):
+    def parameters_by_id(cls, *, idventa):
         """
         Cuáles son los parámetros
         """
-        query = select([cls.hos]).where(cls.hos.c.hos_id == hos_id)
+        query = select([cls.venDet]).where(cls.venDet.c.idventa == idventa)
         return query
         
